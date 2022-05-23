@@ -7,6 +7,7 @@ import (
 
 // commandMode is where to do things like quit.
 func commandMode(text string) error {
+    // This is where the command name mapping is configured.
     commands := map[string]ApplicationCommand{
         "q": quit,
     }
