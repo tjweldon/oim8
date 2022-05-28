@@ -14,6 +14,7 @@ func main() {
 	// DoRepl()
 }
 
+// DoRepl initialises the REPL and runs it as the main function
 func DoRepl() {
 	// supply stdin to REPL
 	reader := bufio.NewReader(os.Stdin)
@@ -32,6 +33,7 @@ func DoRepl() {
 	}
 }
 
+// RunServer initialises the server and runs it as the main function.
 func RunServer() {
 	// supply the server with the stdout.
 	writer := bufio.NewWriter(os.Stdout)
