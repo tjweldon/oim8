@@ -18,7 +18,7 @@ func messageMode(text string) error {
 
 	command, ok := commands[args[0]]
 	if !ok {
-		command = send 
+		command = send
 	}
 
 	return command(args...)
@@ -26,7 +26,7 @@ func messageMode(text string) error {
 
 // send is TODO
 func send(args ...string) error {
-    return nil
+	return nil
 }
 
 // whisper should send a message to a single peer (TODO)

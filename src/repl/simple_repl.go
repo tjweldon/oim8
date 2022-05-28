@@ -47,7 +47,7 @@ const (
 	Command
 )
 
-// String returns the human readable mode value
+// String returns the human-readable mode value
 func (m Mode) String() string {
 	return []string{
 		"Message",
