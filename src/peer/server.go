@@ -2,7 +2,7 @@ package peer
 
 import (
 	"bufio"
-	"fmt"
+	"log"
 	"net"
 )
 
@@ -31,9 +31,16 @@ func (s *Server) Close() {
 	s.conn.Close()
 }
 
-func (s *Server) Serve() error {
+func (s *Server) Serve(done <-chan struct{}) error {
 	// main loop
 	for {
+		// If we're done, return
+		select {
+		case <-done:
+			return nil
+		default:
+		}
+
 		// read incoming messages
 		buf := make([]byte, 1024)
 		n, addr, err := s.conn.ReadFrom(buf)
@@ -52,8 +59,12 @@ func (s *Server) handleMsg(addr net.Addr, buf []byte) {
 
 	_, err := s.writer.Write(buf)
 	if err != nil {
-		fmt.Printf("Encountered error [%s] wile handling message: %s\n", err, buf)
+		log.Printf("Encountered error [%s] wile handling message: %s", err, buf)
 		return
+	}
+	_, err = s.writer.Write([]byte("\n"))
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	s.writer.Flush()

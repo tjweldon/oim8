@@ -5,12 +5,32 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 	"tjweldon/oim8/src/peer"
 	"tjweldon/oim8/src/repl"
 )
 
 func main() {
-	RunServer()
+	done := make(chan struct{})
+	defer func(d chan<- struct{}) {
+		d <- struct{}{}
+		close(d)
+	}(done)
+	msgs := make(chan []byte)
+	defer close(msgs)
+
+	// start the server
+	go RunServer(done)
+	time.Sleep(time.Second)
+
+	// Start a client
+	client := peer.NewClient("127.0.0.1", "42069", msgs)
+	go client.Run()
+
+	msgs <- []byte("Hello?")
+	msgs <- []byte("u there?")
+	msgs <- []byte("ok speak later")
+
 	// DoRepl()
 }
 
@@ -34,7 +54,7 @@ func DoRepl() {
 }
 
 // RunServer initialises the server and runs it as the main function.
-func RunServer() {
+func RunServer(done <-chan struct{}) {
 	// supply the server with the stdout.
 	writer := bufio.NewWriter(os.Stdout)
 
@@ -44,5 +64,5 @@ func RunServer() {
 		log.Fatal(err)
 	}
 
-	log.Fatal(server.Serve())
+	log.Fatal(server.Serve(done))
 }
